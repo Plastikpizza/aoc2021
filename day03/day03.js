@@ -1,4 +1,5 @@
 const fs = require("fs")
+const { parse } = require("path/posix")
 
 function mostCommon(list, position) {
     ones = 0
@@ -38,17 +39,15 @@ async function partOne(list) {
 }
 
 async function partTwo(list) {
-    function oxy(lst, pos) {
+    function helper(lst, pos,f) {
         if (lst.length == 1) return lst[0]
-        return oxy(lst.filter(x => x[pos] == mostCommon(lst, pos)), pos + 1)
+        else {
+            return helper(lst.filter(x => x[pos] == f(lst, pos)), pos + 1,f)
+        }
     }
-    function co2(lst, pos) {
-        if (lst.length == 1) return lst[0]
-        return co2(lst.filter(x => x[pos] == leastCommon(lst, pos)), pos + 1)
-    }
-    let a = parseInt(oxy(list, 0),2)
-    let b = parseInt(co2(list, 0),2)
-    return a*b
+    oxygen = parseInt(helper(list, 0, mostCommon),2)
+    co2 = parseInt(helper(list, 0, leastCommon),2)
+    return oxygen*co2
 }
 
 async function main() {
